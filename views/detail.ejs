@@ -20,6 +20,10 @@
     <link href="/static/mystyle.css" rel="stylesheet">
 
     <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const _id = urlParams.get("_id");
+
         function show_modal() {
 
             $('.modal').addClass('show');
@@ -28,26 +32,57 @@
 
             $('.modal').removeClass('show');
         }
-        
+
         $(document).ready(function () {
-            get_posts()
-            $("#postsNum").text(posts.length)
+            get_detail()
         })
 
-        // function go_write() {
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/api/posts",
-        //         data: {},
-        //         success: function (response) {
-        //             let posts = response["posts"]
-        //             for (let i = 0; i < posts.length; i++) {
-        //                 make_post(posts[i])
+        function get_detail() {
+            $.ajax({
+                type: "GET",
+                url: `/api/posts/${_id}`,
+                data: {},
+                success: function (response) {
+                    let post = response["detail"]
+                    console.log(post)
+                    make_detail(post)
 
-        //             }
-        //         }
-        //     })
-        // }
+                    
+                }
+            })
+        }
+
+        function make_detail(item) {
+            let htmlTemp = `<div class="control">
+                                <input class="input" type="text" value="${item["title"]}" readonly>
+                            </div>
+
+
+                            <div class="control">
+                                <input class="input" type="text" value="${item["user_id"]}" readonly>
+                            </div>
+
+                            <div class="control">
+                                <textarea class="textarea" readonly>${item["content"]}</textarea>
+                            </div>
+
+                            <div class="field is-grouped is-grouped-right">
+                                <p class="control">
+                                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
+                                        수정/삭제
+                                    </a>
+                                </p>
+                                <p class="control">
+                                    <a class="button is-light">
+                                        Cancel
+                                    </a>
+                                </p>
+                            </div>`
+            $("#post_detail").append(htmlTemp)
+        }
+        function correction() {
+            
+        }
     </script>
 
 </head>
@@ -135,31 +170,10 @@
     <br>
     <div>
         <div class="middle">
+
             <h1>상세 페이지</h1>
-            <div class="control">
-                <input class="input" type="text" value="This text is readonly" readonly>
-            </div>
-            
-                       
-            <div class="control">
-                <input class="input" type="text" value="This text is readonly" readonly>
-            </div>
-            
-            <div class="control">
-                <textarea class="textarea" readonly>This content is readonly</textarea>
-            </div>
-    
-            <div class="field is-grouped is-grouped-right">
-                <p class="control">
-                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
-                        수정/삭제
-                    </a>
-                </p>
-                <p class="control">
-                    <a class="button is-light">
-                        Cancel
-                    </a>
-                </p>
+            <div id="post_detail">
+                
             </div>
         </div>
 
@@ -183,7 +197,7 @@
                     </div>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-success" onclick="go_write()">수정하기</button>
+                    <button class="button is-success" onclick="correction()">수정하기</button>
                     <button class="button" onclick="close_modal()">취소</button>
                 </footer>
             </div>

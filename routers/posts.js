@@ -16,7 +16,7 @@ router.get("/posts", async (req, res, next) => {
         posts[i].update({'_id': posts[i]['_id'].toString()})
         
     }
-    console.log(posts)    
+        
     res.json({ posts: posts });
   } catch (err) {
     console.error(err);
@@ -24,20 +24,22 @@ router.get("/posts", async (req, res, next) => {
   }
 });
 
-// router.get("/posts/:_id", async (req, res) => {
-//   const { _id } = req.params;
-//   const posts = await Posts.findOne({ postsId: ObjectId(_id) });
-//   res.json({ detail: posts });
-// });
+router.get("/posts/:_id", async (req, res) => {
+  const {_id} = req.params;
+  
+  const post = await Posts.findOne({ _id: _id });
+  console.log(post)
+  res.json({ detail: post });
+});
 
 router.post('/posts', async (req, res) => {
     
-    const { usr_id, title, passWord, content } = req.body;
-    console.log(usr_id);
+    const { user_id, title, passWord, content } = req.body;
+    console.log(user_id);
     console.log(content);
     let date = new Date().toISOString()
       
-    await Posts.create({ usr_id, title, passWord, content, date });
+    await Posts.create({ user_id, title, passWord, content, date });
   
     res.send({ result: "success" });
 });

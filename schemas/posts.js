@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 const postsSchema = new Schema({
-    usr_id: {
+    user_id: {
         type: String,
         required: true,
     },

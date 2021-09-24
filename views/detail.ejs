@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
+    ></script>
+    <title>나의 첫 vlog</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+
+    <link href="/static/mystyle.css" rel="stylesheet">
+
+    <script>
+        function show_modal() {
+
+            $('.modal').addClass('show');
+        }
+        function close_modal() {
+
+            $('.modal').removeClass('show');
+        }
+        
+        $(document).ready(function () {
+            get_posts()
+            $("#postsNum").text(posts.length)
+        })
+
+        // function go_write() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "/api/posts",
+        //         data: {},
+        //         success: function (response) {
+        //             let posts = response["posts"]
+        //             for (let i = 0; i < posts.length; i++) {
+        //                 make_post(posts[i])
+
+        //             }
+        //         }
+        //     })
+        // }
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar is-transparent container_top">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox"
+                    width="112" height="28">
+            </a>
+            <div class="navbar-burger" data-target="navbarExampleTransparentExample">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div id="navbarExampleTransparentExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="https://bulma.io/">
+                    Home
+                </a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link" href="https://bulma.io/documentation/overview/start/">
+                        Docs
+                    </a>
+                    <div class="navbar-dropdown is-boxed">
+                        <a class="navbar-item" href="https://bulma.io/documentation/overview/start/">
+                            Overview
+                        </a>
+                        <a class="navbar-item" href="https://bulma.io/documentation/overview/modifiers/">
+                            Modifiers
+                        </a>
+                        <a class="navbar-item" href="https://bulma.io/documentation/columns/basics/">
+                            Columns
+                        </a>
+                        <a class="navbar-item" href="https://bulma.io/documentation/layout/container/">
+                            Layout
+                        </a>
+                        <a class="navbar-item" href="https://bulma.io/documentation/form/general/">
+                            Form
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item" href="https://bulma.io/documentation/elements/box/">
+                            Elements
+                        </a>
+                        <a class="navbar-item is-active" href="https://bulma.io/documentation/components/breadcrumb/">
+                            Components
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet"
+                                data-social-target="https://bulma.io" target="_blank"
+                                href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms">
+                                <span class="icon">
+                                    <i class="fab fa-twitter"></i>
+                                </span>
+                                <span>
+                                    Tweet
+                                </span>
+                            </a>
+                        </p>
+                        <p class="control">
+                            <a class="button is-primary"
+                                href="https://github.com/jgthms/bulma/releases/download/0.9.3/bulma-0.9.3.zip">
+                                <span class="icon">
+                                    <i class="fas fa-download"></i>
+                                </span>
+                                <span>Download</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <hr style="border: 2px;">
+    <br>
+    <div>
+        <div class="middle">
+            <h1>상세 페이지</h1>
+            <div class="control">
+                <input class="input" type="text" value="This text is readonly" readonly>
+            </div>
+            
+                       
+            <div class="control">
+                <input class="input" type="text" value="This text is readonly" readonly>
+            </div>
+            
+            <div class="control">
+                <textarea class="textarea" readonly>This content is readonly</textarea>
+            </div>
+    
+            <div class="field is-grouped is-grouped-right">
+                <p class="control">
+                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
+                        수정/삭제
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-light">
+                        Cancel
+                    </a>
+                </p>
+            </div>
+        </div>
+
+
+
+        <div class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">비밀번호를 입력해주세요!</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field">
+                        <p class="control has-icons-left">
+                            <input class="input" type="password" placeholder="Password">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success" onclick="go_write()">수정하기</button>
+                    <button class="button" onclick="close_modal()">취소</button>
+                </footer>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+</body>
+
+</html>

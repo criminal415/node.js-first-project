@@ -40,12 +40,8 @@ app.get('/write', (req, res) => {
     res.render('write')
 })
 
-app.get('/posts/inquire', (req, res) => {
-    res.send('게시물 조회 페이지')
-})
-
-app.get('/posts/modify', (req, res) => {
-    res.send('게시물 수정 페이지')
+app.get('/posts/correction', (req, res) => {
+    res.render('correction')
 })
 
 app.listen(port, () => {

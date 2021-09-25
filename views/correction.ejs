@@ -24,6 +24,11 @@
         const urlParams = new URLSearchParams(queryString);
         const _id = urlParams.get("_id");
 
+        $(document).ready(function () {
+            correct_detail()
+            // $("#postsNum").text(posts.length)
+        })
+
         function show_modal() {
 
             $('.modal').addClass('show');
@@ -32,60 +37,61 @@
 
             $('.modal').removeClass('show');
         }
+        function add_close() {
+            addpost();
+            close_modal();
+        }
 
-        $(document).ready(function () {
-            get_detail()
-        })
-
-        function get_detail() {
+        function correct_detail() {
             $.ajax({
                 type: "GET",
-                url: `/api/posts/${_id}`,
+                url: `/api/posts/correction/${_id}`,
                 data: {},
+                // error: function (xhr, status, error) {
+                //     if (status == 404) {
+                //         alert("존재하지 않는 상품입니다.");
+                //     }
+                //     window.location.href = "/";
+                // },
                 success: function (response) {
-                    let post = response["detail"]
+                    let post = response["post"];
                     console.log(post)
-                    make_detail(post)
+                    console.log(post["user_id"])
 
-
+                    $("#title").val(post["title"]);
+                    $("#user_id").val(post["user_id"]);
+                    $("#content").text(post["content"]);
                 }
-            })
-        }
-
-        function make_detail(item) {
-            let htmlTemp = `<div class="control">
-                                <input class="input" type="text" value="${item["title"]}" readonly>
-                            </div>
-                            <div class="control">
-                                <input class="input" type="text" value="${item["user_id"]}" readonly>
-                            </div>
-
-                            <div class="control">
-                                <textarea class="textarea" readonly>${item["content"]}</textarea>
-                            </div>
-
-                            <div class="field is-grouped is-grouped-right">
-                                <p class="control">
-                                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
-                                        수정/삭제
-                                    </a>
-                                </p>
-                                <p class="control">
-                                    <a class="button is-light">
-                                        Cancel
-                                    </a>
-                                </p>
-                            </div>`
-            $("#post_detail").append(htmlTemp)
+            });
         }
         function correction() {
-            console.log(_id)
-            window.location.href = `/posts/correction?_id=${_id}`
-        
-                    
-
-            
+            $.ajax({
+                type: "PATCH",
+                url: `/api/posts/correction/${_id}`,
+                data: {
+                    title: $("#title").val(),
+                    user_id: $("#user_id").val(),
+                    content: $("#content").val(),
+                    passWord: $("#passWord").val()
+                },
+                error: function (xhr, status, error) {
+                    if (status == 400) {
+                        alert("모두 입력해주세요");
+                    }
+                    window.location.href = "/";
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("변경 완료!");
+                        window.location.href = "/";
+                    }
+                }
+            });
         }
+        function delete_post() {
+
+        }
+
     </script>
 
 </head>
@@ -173,10 +179,28 @@
     <br>
     <div>
         <div class="middle">
-
             <h1>상세 페이지</h1>
-            <div id="post_detail">
 
+            <input class="input is-primary" type="text" placeholder="Primary input" id="title"><br>
+
+            <input class="input is-primary" type="text" placeholder="Primary input" id="user_id"><br>
+
+            <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea><br>
+
+            <div class="field is-grouped is-grouped-right">
+                <p class="control">
+                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
+                        수정 완료!
+                    </a>
+                    <a class="button is-primary" id="modal_btn" onclick="delete_post()">
+                        삭제!
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-light">
+                        Cancel
+                    </a>
+                </p>
             </div>
         </div>
 
@@ -192,7 +216,7 @@
                 <section class="modal-card-body">
                     <div class="field">
                         <p class="control has-icons-left">
-                            <input class="input" type="password" id="passWord" placeholder="Password">
+                            <input class="input" type="password" placeholder="Password" id="passWord">
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
@@ -200,7 +224,7 @@
                     </div>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-success" onclick="correction()">수정하기</button>
+                    <button class="button is-success" onclick="correction()">완료!</button>
                     <button class="button" onclick="close_modal()">취소</button>
                 </footer>
             </div>

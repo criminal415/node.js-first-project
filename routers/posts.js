@@ -72,4 +72,15 @@ router.patch("/posts/correction/:_id", async (req, res) =>{
   res.send({ result: "success" })
 })
 
+router.delete("/posts/delete/:_id", async (req, res) =>{
+  const { _id } = req.params;
+
+  const ispostid = await Posts.find({ _id });
+  if (ispostid.length > 0) {
+    await Posts.deleteOne({ _id });
+  }
+
+  res.send({ result: "success" });
+})
+
 module.exports = router;

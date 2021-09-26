@@ -3,12 +3,13 @@ const express = require("express");
 const { Mongoose } = require("mongoose");
 const Posts = require("../schemas/posts");
 
+
 const router = express.Router();
 
 router.get("/posts", async (req, res, next) => {
   try {
 
-    const postsid = {};
+    // const postsid = {};
     const posts = await Posts.find({}).sort("-date");
 
     for (let i = 0; i < posts.length; i++) {
@@ -19,24 +20,37 @@ router.get("/posts", async (req, res, next) => {
 
     res.json({ posts: posts });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     next(err);
   }
+});
+
+router.get("/search/:keyword", async (req, res, next) => {
+
+  const { keyword } = req.params;
+  const keywords = keyword.split(' ')
+  const list_keywords = []
+  for (let i = 0; i < keywords.length; i++) {
+    list_keywords.push({ $or: [{ title: { $regex: keywords[i] } }, { content: { $regex: keywords[i] } }] })
+  }
+  console.log(list_keywords)
+  const search_posts = await Posts.find({ $or: list_keywords }).sort("-date")
+
+
+  res.json({ posts: search_posts });
+
 });
 
 router.get("/posts/:_id", async (req, res) => {
   const { _id } = req.params;
 
   const post = await Posts.findOne({ _id });
-  console.log(post)
   res.json({ detail: post });
 });
 
 router.post('/posts', async (req, res) => {
 
   const { user_id, title, passWord, content } = req.body;
-  console.log(user_id);
-  console.log(content);
   let date = new Date().toISOString()
 
   await Posts.create({ user_id, title, passWord, content, date });
@@ -47,16 +61,16 @@ router.post('/posts', async (req, res) => {
 router.get('/posts/correction/:_id', async (req, res) => {
   const { _id } = req.params;
   // const { passWord } = req.body;
-  
+
   const post = await Posts.findOne({ _id: _id });
-  console.log(post)
-  
+
+
   res.json({ post: post })
-   
-  
+
+
 });
 
-router.patch("/posts/correction/:_id", async (req, res) =>{
+router.patch("/posts/correction/:_id", async (req, res) => {
   const { _id } = req.params;
   const { user_id, title, passWord, content } = req.body;
   let date = new Date().toISOString()
@@ -72,7 +86,7 @@ router.patch("/posts/correction/:_id", async (req, res) =>{
   res.send({ result: "success" })
 })
 
-router.delete("/posts/delete/:_id", async (req, res) =>{
+router.delete("/posts/delete/:_id", async (req, res) => {
   const { _id } = req.params;
 
   const ispostid = await Posts.find({ _id });

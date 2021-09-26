@@ -20,6 +20,10 @@
     <link href="/static/mystyle.css" rel="stylesheet">
 
     <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const keyword = urlParams.get("keyword");
+
         function show_modal() {
 
             $('.modal').addClass('show');
@@ -30,8 +34,8 @@
         }
 
         $(document).ready(function () {
-            get_posts()
-            // $("#postsNum").text(posts.length)
+            get_search()
+
         })
 
         // function time2str(date) {
@@ -52,20 +56,26 @@
         //     return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         // }
 
-        function get_posts() {
+        function get_search() {
             $("#postsList").empty()
-            // console.log(title)
             $.ajax({
                 type: "GET",
-                url: "/api/posts",
+                url: `/api/search/${keyword}`,
                 data: {},
                 success: function (response) {
                     let posts = response["posts"]
+                    console.log(response)
+                    console.log(posts)
+                    if (posts.length < 1) {
+                        alert("검색과 일치하는 내용이 없습니다.")
+                    } else {
 
-                    for (let i = 0; i < posts.length; i++) {
-                        make_post(posts[i])
+                        for (let i = 0; i < posts.length; i++) {
+                            make_post(posts[i])
 
+                        }
                     }
+
                 }
             })
         }
@@ -213,6 +223,9 @@
                         </div>
                     </div>
                     <div class="level-item">
+                        <form action="search" method="get" class="search-form">
+
+                        </form>
                         <div class="field has-addons">
                             <p class="control">
                                 <input class="input" id="search_word" type="text" placeholder="Find a post">

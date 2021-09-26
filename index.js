@@ -8,6 +8,7 @@ connect();
 //const postsRouter = require('./routes/post');
 
 const postsRouter = require("./routers/posts");
+const posts = require('./schemas/posts');
 
 
 app.use((req, res, next) => {
@@ -27,14 +28,19 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  
-  res.render('index');
+
+    res.render('index');
 })
 
 app.get('/detail', (req, res) => {
-  
+
     res.render('detail');
-  })
+})
+
+app.get('/search', (req, res) => {
+
+    res.render('search');
+})
 
 app.get('/write', (req, res) => {
     res.render('write')

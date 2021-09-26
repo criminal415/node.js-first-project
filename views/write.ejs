@@ -34,29 +34,30 @@
         }
 
         function addpost() {
-        $.ajax({
-          type: "POST",
-          url: "/api/posts",
-          data: {
-            title: $("#title").val(),
-            user_id: $("#user_id").val(),
-            content: $("#content").val(),
-            passWord: $("#passWord").val()
-          },
-          error: function(xhr, status, error) {
-            if (status == 400) {
-              alert("모두 입력해주세요");
-            }
-            window.location.href = "/";
-          },
-          success: function(response) {
-            if (response["result"] == "success") {
-              alert("저장 완료!");
-              window.location.href = "/";
-            }
-          }
-        });
-      }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/posts",
+                data: {
+                    title: $("#title").val(),
+                    user_id: $("#user_id").val(),
+                    content: $("#content").val(),
+                    passWord: $("#passWord").val(),
+                },
+                error: function (xhr, status, error) {
+                    if (status == 400) {
+                        alert("모두 입력해주세요");
+                    }
+                    window.location.href = "/";
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("저장 완료!");
+                        window.location.href = "/";
+                    }
+                }
+            });
+        }
     </script>
 
 </head>
@@ -145,13 +146,13 @@
     <div>
         <div class="middle">
             <h1>상세 페이지</h1>
-                        
+
             <input class="input is-primary" type="text" placeholder="Primary input" id="title"><br>
-                                    
+
             <input class="input is-primary" type="text" placeholder="Primary input" id="user_id"><br>
-                    
+
             <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea><br>
-    
+
             <div class="field is-grouped is-grouped-right">
                 <p class="control">
                     <a class="button is-primary" id="modal_btn" onclick="show_modal()">

@@ -32,3 +32,12 @@
 .modal{
     background-color: rgba(211, 211, 211, 0.4);
 }
+.post_box{
+    text-overflow: ellipsis !important;
+    height: 100px;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+} 

@@ -63,7 +63,7 @@
                             <div class="control">
                                 <textarea class="textarea" readonly>${item["content"]}</textarea>
                             </div>
-
+                            <br>
                             <div class="field is-grouped is-grouped-right">
                                 <p class="control">
                                     <a class="button is-primary" id="modal_btn" onclick="show_modal()">
@@ -71,16 +71,33 @@
                                     </a>
                                 </p>
                                 <p class="control">
-                                    <a class="button is-light">
+                                    <a class="button is-light" onclick="location.href='/'">
                                         Cancel
                                     </a>
                                 </p>
                             </div>`
             $("#post_detail").append(htmlTemp)
         }
+
         function correction() {
-            console.log(_id)
-            window.location.href = `/posts/correction?_id=${_id}`
+            $.ajax({
+                type: "POST",
+                url: `api/detail/${_id}`,
+                data: {
+                    passWord: $("#passWord").val(),
+                },
+                success: function (response) {
+                    if (response["msg"] == "success") {
+                        window.location.href = `/posts/correction?_id=${_id}`
+                    } else {
+                        alert("비밀번호를 확인해주세요!")
+
+                    }
+                }
+            });
+
+
+
         }
     </script>
 

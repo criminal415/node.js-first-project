@@ -30,13 +30,13 @@
         })
 
         function show_modal_D() {
-            $("#cor").css('display','none')
-            $("#del").css('display','block')
+            $("#cor").css('display', 'none')
+            $("#del").css('display', 'block')
             $('.modal').addClass('show');
         }
         function show_modal_C() {
-            $("#del").css('display','none')
-            $("#cor").css('display','block')
+            $("#del").css('display', 'none')
+            $("#cor").css('display', 'block')
             $('.modal').addClass('show');
         }
         function close_modal() {
@@ -210,7 +210,7 @@
                     <a class="button is-primary" id="modal_btn" onclick="show_modal_C()">
                         수정 완료!
                     </a>
-                    <a class="button is-primary" id="modal_btn" onclick="show_modal_D()">
+                    <a class="button is-primary" id="modal_btn" onclick="delete_post()">
                         삭제!
                     </a>
                 </p>
@@ -228,7 +228,7 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">비밀번호를 입력해주세요!</p>
+                    <p class="modal-card-title">새로운 비밀번호를 입력해주세요!</p>
                     <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">

@@ -48,6 +48,20 @@ router.get("/posts/:_id", async (req, res) => {
   res.json({ detail: post });
 });
 
+router.post('/detail/:_id', async (req, res) => {
+  const { passWord } = req.body;
+  const { _id } = req.params;
+  console.log(_id)
+  console.log(passWord)
+  const post = await Posts.find({ _id });
+  console.log(post[0]["passWord"])
+  if (post[0]["passWord"] === parseInt(passWord)) {
+    res.send({ msg: "success" });
+  } else {
+    res.send({ msg: "fail" })
+  }
+});
+
 router.post('/posts', async (req, res) => {
 
   const { user_id, title, passWord, content } = req.body;
@@ -72,8 +86,8 @@ router.get('/posts/correction/:_id', async (req, res) => {
 
 router.patch("/posts/correction/:_id", async (req, res) => {
   const { _id } = req.params;
-  const { user_id, title, passWord, content } = req.body;
-  let date = new Date().toISOString()
+  const { user_id, title, passWord, content, } = req.body;
+  let date = new Date()
 
   const ispostid = await Posts.find({ _id });
   if (ispostid.length > 0) {

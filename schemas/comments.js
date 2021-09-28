@@ -9,6 +9,7 @@ const commentsSchema = new Schema({
     author: {
         type: String,
         required: true,
+        unique: true
     },
     date: {
         type: String,

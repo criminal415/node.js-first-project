@@ -90,10 +90,10 @@
             $("#post_detail").append(htmlTemp)
         }
         function time2str(day) {
-            
+
             let today = new Date()
             let time = (today - day) / 1000 / 60;
-            
+
             if (time < 60) {
                 return parseInt(time) + "분 전"
             }
@@ -136,7 +136,7 @@
                                     <div class="media-content">
                                         <div class="content">
                                             <p>
-                                                <strong>${item["author"]}</strong> <small>${date}</small> 
+                                                <strong id="author">${item["author"]}</strong> <small>${date}</small> 
                                                 <br>
                                                 ${item["content"]}
                                             </p>
@@ -153,9 +153,27 @@
                                         </nav>
                                     </div>
                                 </article>
+                                
                             </div>`
             $("#comment_list").append(htmlTemp)
         }
+
+        // function delete_comment() {
+
+        //     $.ajax({
+        //         type: "DELETE",
+        //         url: `/api/comment/delete/${_id}`,
+        //         data: {
+        //             author: $("#author").val()
+        //         },
+        //         success: function (response) {
+        //             if (response["result"] == "success") {
+        //                 alert("삭제 완료!");
+        //                 window.location.href =`/detail?_id=${_id}`;
+        //             }
+        //         }
+        //     });
+        // }
 
         function correction() {
             $.ajax({
@@ -181,11 +199,13 @@
                     author: $("#user_id").val(),
                     content: $("#comment").val(),
                     passWord: $("#passWord").val(),
-                },
+                }, 
                 success: function (response) {
-                    if (response["result"] == "success") {
+                    if (response["result"] === "success") {
                         alert("저장 완료!");
                         window.location.href = `/detail?_id=${_id}`;
+                    } else {
+                        alert("댓글은 하나만 작성 가능합니다!")
                     }
                 }
             });
@@ -248,25 +268,10 @@
                 <div class="navbar-item">
                     <div class="field is-grouped">
                         <p class="control">
-                            <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet"
-                                data-social-target="https://bulma.io" target="_blank"
-                                href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms">
-                                <span class="icon">
-                                    <i class="fab fa-twitter"></i>
-                                </span>
-                                <span>
-                                    Tweet
-                                </span>
-                            </a>
+
                         </p>
                         <p class="control">
-                            <a class="button is-primary"
-                                href="https://github.com/jgthms/bulma/releases/download/0.9.3/bulma-0.9.3.zip">
-                                <span class="icon">
-                                    <i class="fas fa-download"></i>
-                                </span>
-                                <span>Download</span>
-                            </a>
+
                         </p>
                     </div>
                 </div>
@@ -291,7 +296,7 @@
 
             <hr style="font-size: large;">
             <div id="comment_list">
-                
+
             </div>
             <br>
             <footer class="footer">

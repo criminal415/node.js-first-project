@@ -55,15 +55,14 @@
 
         function get_posts() {
             $("#postsList").empty()
-            // let page = 1;
+            
             $.ajax({
                 type: "GET",
                 url: "/api/aaa",
                 data: {},
                 success: function (response) {
                     let posts = response["posts"]
-                    // const maxPage = parseInt((posts.length / 4)+1)
-                    // console.log(maxPage)
+                    
                     $("#postsNum").append(posts.length)
                     for (let i = 0; i < posts.length; i++) {
                         let time_post = new Date(posts[i]["date"])

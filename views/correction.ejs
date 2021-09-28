@@ -28,7 +28,9 @@
             correct_detail()
             // $("#postsNum").text(posts.length)
         })
-
+        function GO() {
+            location.href=`/detail?_id=${_id}`
+        }
         function show_modal_D() {
             $("#cor").css('display', 'none')
             $("#del").css('display', 'block')
@@ -53,17 +55,10 @@
                 type: "GET",
                 url: `/api/posts/correction/${_id}`,
                 data: {},
-                // error: function (xhr, status, error) {
-                //     if (status == 404) {
-                //         alert("존재하지 않는 상품입니다.");
-                //     }
-                //     window.location.href = "/";
-                // },
+                
                 success: function (response) {
                     let post = response["post"];
-                    console.log(post)
-                    console.log(post["user_id"])
-
+                    
                     $("#title").val(post["title"]);
                     $("#user_id").val(post["user_id"]);
                     $("#content").text(post["content"]);
@@ -199,11 +194,11 @@
         <div class="middle">
             <h1>상세 페이지</h1>
 
-            <input class="input is-primary" type="text" placeholder="Primary input" id="title"><br>
-
-            <input class="input is-primary" type="text" placeholder="Primary input" id="user_id"><br>
-
-            <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea><br>
+            <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="title">
+            <br>
+            <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="user_id">
+            <br>
+            <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea>
 
             <div class="field is-grouped is-grouped-right">
                 <p class="control">
@@ -215,7 +210,7 @@
                     </a>
                 </p>
                 <p class="control">
-                    <a class="button is-light">
+                    <a class="button is-light" onclick="GO()">
                         Cancel
                     </a>
                 </p>

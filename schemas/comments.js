@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
-const postsSchema = new Schema({
-    user_id: {
-        type: String,
-        required: true,
+const commentsSchema = new Schema({
+    post_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true
     },
-    title: {
+    author: {
         type: String,
         required: true,
     },
@@ -20,11 +20,7 @@ const postsSchema = new Schema({
     },
     content: {
         type: String        
-    },
-    comments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments',
-    }]
+    }
 });
 
-module.exports = mongoose.model("posts", postsSchema);
+module.exports = mongoose.model("comments", commentsSchema);

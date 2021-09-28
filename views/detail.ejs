@@ -24,8 +24,18 @@
         const urlParams = new URLSearchParams(queryString);
         const _id = urlParams.get("_id");
 
-        function show_modal() {
+        $(document).ready(function () {
+            get_comments()
 
+        })
+        function show_modal_D() {
+            $(".cor").css('display', 'none')
+            $(".reg").css('display', 'block')
+            $('.modal').addClass('show');
+        }
+        function show_modal_C() {
+            $(".reg").css('display', 'none')
+            $(".cor").css('display', 'block')
             $('.modal').addClass('show');
         }
         function close_modal() {
@@ -56,17 +66,18 @@
             let htmlTemp = `<div class="control">
                                 <input class="input" type="text" value="${item["title"]}" readonly>
                             </div>
+                            <br>
                             <div class="control">
                                 <input class="input" type="text" value="${item["user_id"]}" readonly>
                             </div>
-
+                            <br>
                             <div class="control">
                                 <textarea class="textarea" readonly>${item["content"]}</textarea>
                             </div>
                             <br>
                             <div class="field is-grouped is-grouped-right">
                                 <p class="control">
-                                    <a class="button is-primary" id="modal_btn" onclick="show_modal()">
+                                    <a class="button is-primary" id="modal_btn" onclick="show_modal_C()">
                                         수정/삭제
                                     </a>
                                 </p>
@@ -77,6 +88,73 @@
                                 </p>
                             </div>`
             $("#post_detail").append(htmlTemp)
+        }
+        function time2str(day) {
+            
+            let today = new Date()
+            let time = (today - day) / 1000 / 60;
+            
+            if (time < 60) {
+                return parseInt(time) + "분 전"
+            }
+            time = time / 60;
+            if (time < 24) {
+                return parseInt(time) + "시간 전"
+            }
+            time = time / 24;
+            if (time < 7) {
+                return parseInt(time) + "일 전"
+            }
+            return day.getFullYear() + '년' + day.getMonth() + 1 + '월' + day.getDate() + '일'
+        }
+
+
+        function get_comments() {
+            $.ajax({
+                type: "GET",
+                url: `/api/comments/${_id}`,
+                data: {},
+                success: function (response) {
+                    let comments = response["detail"]
+                    let comment = comments['comments']
+                    $("#comment_count").append(comment.length)
+                    for (let i = 0; i < comment.length; i++) {
+                        let time_post = new Date(comment[i]["date"])
+                        let time_before = time2str(time_post)
+                        make_comments(comment[i], time_before)
+
+
+
+                    }
+                }
+            })
+        }
+        function make_comments(item, date) {
+            let htmlTemp = `<div class="box">
+                                <article class="media">
+
+                                    <div class="media-content">
+                                        <div class="content">
+                                            <p>
+                                                <strong>${item["author"]}</strong> <small>${date}</small> 
+                                                <br>
+                                                ${item["content"]}
+                                            </p>
+                                        </div>
+                                        <nav class="level is-mobile">
+                                            <div class="level-left">
+                                                <a class="level-item" aria-label="retweet">
+                                                    <span class="icon is-small">
+                                                        <i class="fas fa-retweet" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </article>
+                            </div>`
+            $("#comment_list").append(htmlTemp)
         }
 
         function correction() {
@@ -91,13 +169,26 @@
                         window.location.href = `/posts/correction?_id=${_id}`
                     } else {
                         alert("비밀번호를 확인해주세요!")
-
                     }
                 }
             });
-
-
-
+        }
+        function comment_register() {
+            $.ajax({
+                type: "POST",
+                url: `/api/comments/detail/${_id}`,
+                data: {
+                    author: $("#user_id").val(),
+                    content: $("#comment").val(),
+                    passWord: $("#passWord").val(),
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("저장 완료!");
+                        window.location.href = `/detail?_id=${_id}`;
+                    }
+                }
+            });
         }
     </script>
 
@@ -192,6 +283,29 @@
 
             </div>
         </div>
+        <br>
+        <div class="middle">
+
+            댓글<strong id="comment_count"></strong>
+
+
+            <hr style="font-size: large;">
+            <div id="comment_list">
+                
+            </div>
+            <br>
+            <footer class="footer">
+                <textarea class="textarea is-primary" placeholder="Primary textarea" id="comment">
+
+                </textarea>
+                <br>
+                <div class="control">
+                    <button class="button is-primary" onclick="show_modal_D()">댓글 등록</button>
+                </div>
+            </footer>
+        </div>
+
+
 
 
 
@@ -199,11 +313,19 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">비밀번호를 입력해주세요!</p>
+                    <p class="modal-card-title cor">비밀번호를 입력해주세요!</p>
+                    <p class="modal-card-title reg">ID와 비밀번호를 입력해주세요!</p>
                     <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="field">
+                        <p class="control has-icons-left reg">
+                            <input class="input" type="text" id="user_id" placeholder="ID">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                        <br>
                         <p class="control has-icons-left">
                             <input class="input" type="password" id="passWord" placeholder="Password">
                             <span class="icon is-small is-left">
@@ -213,7 +335,8 @@
                     </div>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-success" onclick="correction()">수정하기</button>
+                    <button class="button is-success cor" onclick="correction()">수정/삭제</button>
+                    <button class="button is-success reg" onclick="comment_register()">등록</button>
                     <button class="button" onclick="close_modal()">취소</button>
                 </footer>
             </div>

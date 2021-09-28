@@ -9,6 +9,7 @@ connect();
 
 const postsRouter = require("./routers/posts");
 const posts = require('./schemas/posts');
+const comments = require('./schemas/comments');
 
 
 app.use((req, res, next) => {

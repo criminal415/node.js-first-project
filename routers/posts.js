@@ -1,24 +1,25 @@
 const { ObjectId } = require("bson");
 const express = require("express");
 const { Mongoose } = require("mongoose");
+const Comments = require("../schemas/comments");
 const Posts = require("../schemas/posts");
 
 
 const router = express.Router();
 
-router.get("/posts", async (req, res, next) => {
+router.get("/aaa", async (req, res, next) => {
   try {
-
-    // const postsid = {};
+    // let page = Math.max(1, ParseInt(req.query.page))
+    // console.log(page)
     const posts = await Posts.find({}).sort("-date");
-
+    
     for (let i = 0; i < posts.length; i++) {
 
       posts[i].update({ '_id': posts[i]['_id'].toString() })
 
     }
 
-    res.json({ posts: posts });
+    res.json({ posts: posts })
   } catch (err) {
     // console.error(err);
     next(err);
@@ -48,6 +49,14 @@ router.get("/posts/:_id", async (req, res) => {
   res.json({ detail: post });
 });
 
+router.get("/comments/:_id", async (req, res) => {
+  const { _id } = req.params;
+
+  const comments = await Posts.findOne({ _id }).populate('comments');
+  
+  res.json({ detail: comments });
+});
+
 router.post('/detail/:_id', async (req, res) => {
   const { passWord } = req.body;
   const { _id } = req.params;
@@ -60,6 +69,25 @@ router.post('/detail/:_id', async (req, res) => {
   } else {
     res.send({ msg: "fail" })
   }
+});
+
+router.post('/comments/detail/:_id', async (req, res) => {
+  const { _id } = req.params;
+  const post_id = _id;
+  const { author, passWord, content } = req.body;
+  let date = new Date().toISOString()
+  
+  await Comments.create({ post_id, author, passWord, content, date });
+  let comment = await Comments.find({ post_id, date })
+  console.log(comment)
+  let posts = await Posts.findOne({ _id:_id })
+  console.log(posts)
+  await Posts.findOneAndUpdate({_id : _id}, {$push: {comments: comment }})
+  posts = await Posts.findOne({ _id:_id })
+  console.log(posts)
+  // let posts = await Posts.find({comment})
+  // console.log(posts)
+  res.send({ result: "success" });
 });
 
 router.post('/posts', async (req, res) => {

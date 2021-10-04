@@ -29,9 +29,9 @@
 .show{
     display: block !important;
 }
-.modal{
+/* .modal{
     background-color: rgba(211, 211, 211, 0.4);
-}
+} */
 .post_box{
     text-overflow: ellipsis !important;
     height: 100px;

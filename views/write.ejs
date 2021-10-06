@@ -19,7 +19,13 @@
 
     <link href="/static/mystyle.css" rel="stylesheet">
 
+    <script src="/api.js"></script>
+
     <script>
+        let user;
+      getSelf(function (u) {
+        user = u;
+      });
         function show_modal() {
 
             $('.modal').addClass('show');
@@ -38,15 +44,16 @@
             $.ajax({
                 type: "POST",
                 url: "/api/posts",
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {
                     title: $("#title").val(),
-                    user_id: $("#user_id").val(),
                     content: $("#content").val(),
-                    passWord: $("#passWord").val(),
                 },
                 error: function (xhr, status, error) {
-                    if (status == 400) {
-                        alert("모두 입력해주세요");
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
                     }
                     window.location.href = "/";
                 },
@@ -131,10 +138,8 @@
     <div>
         <div class="middle">
             <h1>상세 페이지</h1>
-
+            
             <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="title">
-
-            <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="user_id">
 
             <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea>
             <br>
@@ -158,13 +163,13 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">비밀번호를 입력해주세요!</p>
+                    <p class="modal-card-title">알림</p>
                     <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="field">
                         <p class="control has-icons-left">
-                            <input class="input" type="password" placeholder="Password" id="passWord">
+                            <div>내용을 저장하시겠습니까?</div>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>
@@ -184,7 +189,7 @@
     </div>
 
 
-
+<script src="/api.js"></script>
 
 
 </body>

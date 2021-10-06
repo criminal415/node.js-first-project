@@ -16,8 +16,11 @@
     <title>나의 첫 vlog</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <script src = "https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
 
     <link href="/static/mystyle.css" rel="stylesheet">
+    
+    <script src="/api.js"></script>
 
     <script>
         const queryString = window.location.search;
@@ -25,9 +28,17 @@
         const _id = urlParams.get("_id");
 
         $(document).ready(function () {
+            get_detail()
             get_comments()
-
         })
+        window.onload=function() {
+            $(document).on(function () {
+            loginState()
+        })
+
+        }
+        
+        
         function show_modal_D() {
             $(".cor").css('display', 'none')
             $(".reg").css('display', 'block')
@@ -43,10 +54,6 @@
             $('.modal').removeClass('show');
         }
 
-        $(document).ready(function () {
-            get_detail()
-        })
-
         function get_detail() {
             $.ajax({
                 type: "GET",
@@ -54,7 +61,6 @@
                 data: {},
                 success: function (response) {
                     let post = response["detail"]
-                    console.log(post)
                     make_detail(post)
 
 
@@ -77,12 +83,12 @@
                             <br>
                             <div class="field is-grouped is-grouped-right">
                                 <p class="control">
-                                    <a class="button is-primary" id="modal_btn" onclick="show_modal_C()">
+                                    <a class="button is-primary login" id="modal_btn" onclick="window.location.href='/posts/correction?_id=${_id}'">
                                         수정/삭제
                                     </a>
                                 </p>
                                 <p class="control">
-                                    <a class="button is-light" onclick="location.href='/'">
+                                    <a class="button is-light login" onclick="location.href='/'">
                                         Cancel
                                     </a>
                                 </p>
@@ -115,17 +121,14 @@
                 url: `/api/comments/${_id}`,
                 data: {},
                 success: function (response) {
-                    let comments = response["detail"]
-                    let comment = comments['comments']
-                    $("#comment_count").append(comment.length)
-                    for (let i = 0; i < comment.length; i++) {
-                        let time_post = new Date(comment[i]["date"])
+                    const comments = response['detail']
+                                                           
+                    $("#comment_count").append(comments.length)
+                    for (let i = 0; i < comments.length; i++) {
+                        let time_post = new Date(comments[i]["date"])
                         let time_before = time2str(time_post)
-                        make_comments(comment[i], time_before)
-
-
-
-                    }
+                        make_comments(comments[i], time_before)
+                    };
                 }
             })
         }
@@ -136,7 +139,7 @@
                                     <div class="media-content">
                                         <div class="content">
                                             <p>
-                                                <strong id="author">${item["author"]}</strong> <small>${date}</small> 
+                                                <strong id="author">${item["userId"]}</strong> <small>${date}</small> 
                                                 <br>
                                                 ${item["content"]}
                                             </p>
@@ -152,60 +155,123 @@
                                             </div>
                                         </nav>
                                     </div>
+                                    <div class="dropdown is-right is-active">
+                                        <div class="dropdown-menu" id="dropdown-menu6" role="menu">
+                                            <div class="dropdown-content comment_cor_box" id='${item["_id"]}'>
+                                                <div class="dropdown-item">
+                                                    <div class="content">
+                                                        <p>
+                                                            <strong>${item["userId"]}</strong> <small>${date}</small> 
+                                                            <br>
+                                                            <input class="input is-primary" type="text" style="width:400px;" placeholder="${item["content"]}" id="${item["_id"]}1">
+                                                        </p>
+                                                    </div>
+                                                    <div class="buttons logout">
+                                                        <a class="button is-primary logout" id='test' onclick="comment_correction('${item["_id"]}')">
+                                                            <strong>완료!</strong>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="buttons logout">
+                                        <a class="button is-primary logout" id='test' onclick="showComBox('${item["_id"]}')">
+                                            <strong>수정</strong>
+                                        </a>
+                                        <a class="button is-primary logout" onclick="delete_comment('${item["_id"]}')">
+                                            <strong>삭제</strong>
+                                        </a>
+                                    </div>
                                 </article>
                                 
                             </div>`
             $("#comment_list").append(htmlTemp)
         }
+        function showComBox(test) {
+            
+            if (localStorage.getItem('token')){
+                $(`#${test}`).toggleClass('show')
+            } else {
+                alert('로그인후 사용가능합니다!')
+                window.location.href="/login"
+            }
+            
+        }
 
-        // function delete_comment() {
-
-        //     $.ajax({
-        //         type: "DELETE",
-        //         url: `/api/comment/delete/${_id}`,
-        //         data: {
-        //             author: $("#author").val()
-        //         },
-        //         success: function (response) {
-        //             if (response["result"] == "success") {
-        //                 alert("삭제 완료!");
-        //                 window.location.href =`/detail?_id=${_id}`;
-        //             }
-        //         }
-        //     });
-        // }
-
-        function correction() {
+        function comment_correction(test) {
+            const a =$(`#${test}`).find('input').attr('id')
+            console.log($(`#${a}`).val())
             $.ajax({
-                type: "POST",
-                url: `api/detail/${_id}`,
+                type: "PATCH",
+                url: `/api/comment/correction/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {
-                    passWord: $("#passWord").val(),
+                    comment_id: test,
+                    content: $(`#${a}`).val()
+                },
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
+                    }
+                    window.location.href = "/login";
                 },
                 success: function (response) {
-                    if (response["msg"] == "success") {
-                        window.location.href = `/posts/correction?_id=${_id}`
+                    if (response["result"] === "success") {
+                        alert("변경 완료!");
+                        window.location.href = `/detail?_id=${_id}`;
                     } else {
-                        alert("비밀번호를 확인해주세요!")
+                        alert("너 뭐냐?")
                     }
                 }
             });
         }
+
+        function delete_comment(test) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/comment/delete/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                data: {
+                    comment_id: test,
+                },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("삭제 완료!");
+                        window.location.href =`/detail?_id=${_id}`;
+                    } else {
+                        alert(response["msg"])
+                    }
+                }
+            });
+        }
+
         function comment_register() {
             $.ajax({
                 type: "POST",
                 url: `/api/comments/detail/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {
-                    author: $("#user_id").val(),
                     content: $("#comment").val(),
-                    passWord: $("#passWord").val(),
-                }, 
+                },
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
+                    }
+                    window.location.href = "/";
+                },
                 success: function (response) {
                     if (response["result"] === "success") {
                         alert("저장 완료!");
                         window.location.href = `/detail?_id=${_id}`;
                     } else {
-                        alert("댓글은 하나만 작성 가능합니다!")
+                        alert("너 뭐냐?")
                     }
                 }
             });
@@ -267,12 +333,22 @@
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="field is-grouped">
-                        <p class="control">
-
-                        </p>
-                        <p class="control">
-
-                        </p>
+                        <div class="navbar-end">
+                            <div class="navbar-item">
+                              <div class="buttons">
+                                <a class="button is-primary logout">
+                                  <strong>My page</strong>
+                                </a>
+                                <a class="button is-primary login" href='/login'>
+                                    <strong>로그인</strong>
+                                </a>
+                                <a class="button is-primary logout" onclick="signOut()" href='/login'>
+                                    <strong>로그아웃</strong>
+                                </a>
+                              </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -300,20 +376,14 @@
             </div>
             <br>
             <footer class="footer">
-                <textarea class="textarea is-primary" placeholder="Primary textarea" id="comment">
-
-                </textarea>
+                <textarea class="textarea is-primary" placeholder="Primary textarea" id="comment"></textarea>
                 <br>
                 <div class="control">
-                    <button class="button is-primary" onclick="show_modal_D()">댓글 등록</button>
+                    <button class="button is-primary" onclick="comment_register()">댓글 등록</button>
                 </div>
             </footer>
         </div>
-
-
-
-
-
+        
         <div class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -351,11 +421,7 @@
 
 
     </div>
-
-
-
-
-
+    
 </body>
 
 </html>

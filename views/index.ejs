@@ -19,6 +19,8 @@
 
     <link href="/static/mystyle.css" rel="stylesheet">
 
+    <script src="/api.js"></script>
+
     <script>
         function show_modal() {
 
@@ -31,6 +33,7 @@
 
         $(document).ready(function () {
             get_posts()
+            loginState()
             // $("#postsNum").text(posts.length)
         })
 
@@ -58,7 +61,7 @@
             
             $.ajax({
                 type: "GET",
-                url: "/api/aaa",
+                url: "/api/posts",
                 data: {},
                 success: function (response) {
                     let posts = response["posts"]
@@ -81,14 +84,14 @@
             let htmlTemp = `<div class="columns post_board" onclick="location.href='/detail?_id=${item["_id"]}'">
                                 <div class="column is-narrow">
                                     <div class="box post_box" style="width: 200px;">
-                                        <p class="title is-5">${item["user_id"]}</p>
+                                        <p class="title is-5">${item["userId"]}</p>
                                         <p class="subtitle">${date}</p>
                                     </div>
                                 </div>
                                 <div class="column">
                                     <div class="box post_box">
                                         <p class="title is-5" id="title">${item["title"]}</p>
-                                        <p class="subtitle">"${item["content"]},${item["passWord"]}"</p>
+                                        <p class="subtitle">"${item["content"]}"</p>
                                     </div>
                                 </div>
                             </div>`
@@ -162,27 +165,22 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="field is-grouped">
-                            <p class="control">
-                                <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet"
-                                    data-social-target="https://bulma.io" target="_blank"
-                                    href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms">
-                                    <span class="icon">
-                                        <i class="fab fa-twitter"></i>
-                                    </span>
-                                    <span>
-                                        Tweet
-                                    </span>
-                                </a>
-                            </p>
-                            <p class="control">
-                                <a class="button is-primary"
-                                    href='/login'>
-                                    <span class="icon">
-                                        <i class="fas fa-download"></i>
-                                    </span>
-                                    <span>로그인</span>
-                                </a> 
-                            </p>
+                            <div class="navbar-end">
+                                <div class="navbar-item">
+                                  <div class="buttons">
+                                    <a class="button is-primary logout">
+                                      <strong>My page</strong>
+                                    </a>
+                                    <a class="button is-primary login" href='/login'>
+                                        <strong>로그인</strong>
+                                    </a>
+                                    <a class="button is-primary logout" onclick="signOut()" href='/login'>
+                                        <strong>로그아웃</strong>
+                                    </a>
+                                  </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>

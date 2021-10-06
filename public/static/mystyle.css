@@ -29,9 +29,7 @@
 .show{
     display: block !important;
 }
-/* .modal{
-    background-color: rgba(211, 211, 211, 0.4);
-} */
+
 .post_box{
     text-overflow: ellipsis !important;
     height: 100px;
@@ -44,3 +42,6 @@
 .cor_box {
     margin-bottom: 10px;
 } 
+.comment_cor_box {
+    display: none;
+}

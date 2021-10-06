@@ -18,11 +18,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
 
     <link href="/static/mystyle.css" rel="stylesheet">
+    <script src="/api.js"></script>
 
     <script>
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const _id = urlParams.get("_id");
+
+        let user;
+        getSelf(function (u) {
+          console.log('너 언제 불리냐?')
+        user = u;
+        });
 
         $(document).ready(function () {
             correct_detail()
@@ -32,11 +39,13 @@
             location.href=`/detail?_id=${_id}`
         }
         function show_modal_D() {
+            $("#cor_del").text("정말 삭제하시겠습니까?")
             $("#cor").css('display', 'none')
             $("#del").css('display', 'block')
             $('.modal').addClass('show');
         }
         function show_modal_C() {
+            $("#cor_del").text("정말 변경하시겠습니까?")
             $("#del").css('display', 'none')
             $("#cor").css('display', 'block')
             $('.modal').addClass('show');
@@ -54,13 +63,20 @@
             $.ajax({
                 type: "GET",
                 url: `/api/posts/correction/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {},
-                
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
+                    }
+                    window.location.href = "/";
+                },                
                 success: function (response) {
                     let post = response["post"];
                     
                     $("#title").val(post["title"]);
-                    $("#user_id").val(post["user_id"]);
                     $("#content").text(post["content"]);
                 }
             });
@@ -69,15 +85,16 @@
             $.ajax({
                 type: "PATCH",
                 url: `/api/posts/correction/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {
                     title: $("#title").val(),
-                    user_id: $("#user_id").val(),
                     content: $("#content").val(),
-                    passWord: $("#passWord").val()
                 },
                 error: function (xhr, status, error) {
-                    if (status == 400) {
-                        alert("모두 입력해주세요");
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
                     }
                     window.location.href = "/";
                 },
@@ -94,7 +111,16 @@
             $.ajax({
                 type: "DELETE",
                 url: `/api/posts/delete/${_id}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
                 data: {},
+                error: function (xhr, status, error) {
+                    if (status == 401) {
+                        alert('로그인이 필요합니다.')
+                    }
+                    window.location.href = "/";
+                },
                 success: function (response) {
                     if (response["result"] == "success") {
                         alert("삭제 완료!");
@@ -180,9 +206,7 @@
             <h1>상세 페이지</h1>
 
             <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="title">
-            <br>
-            <input class="input is-primary cor_box" type="text" placeholder="Primary input" id="user_id">
-            <br>
+            <br>    
             <textarea class="textarea is-primary" placeholder="Primary textarea" id="content"></textarea>
             <br>
 
@@ -209,13 +233,13 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">새로운 비밀번호를 입력해주세요!</p>
+                    <p class="modal-card-title">알림</p>
                     <button class="delete" aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                     <div class="field">
                         <p class="control has-icons-left">
-                            <input class="input" type="password" placeholder="Password" id="passWord">
+                            <div id="cor_del"></div>
                             <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>
                             </span>

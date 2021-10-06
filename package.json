@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettify": "prettier --write *.js **/*.js"
+    "prettify": "prettier --write *.js **/*.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "mongoose": "^6.0.7"
   },
   "devDependencies": {
+    "nodemon": "^2.0.13",
     "prettier": "^2.4.1"
   }
 }

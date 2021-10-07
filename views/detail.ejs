@@ -26,34 +26,14 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const _id = urlParams.get("_id");
+        
 
         $(document).ready(function () {
             get_detail()
             get_comments()
-        })
-        window.onload=function() {
-            $(document).on(function () {
             loginState()
         })
-
-        }
-        
-        
-        function show_modal_D() {
-            $(".cor").css('display', 'none')
-            $(".reg").css('display', 'block')
-            $('.modal').addClass('show');
-        }
-        function show_modal_C() {
-            $(".reg").css('display', 'none')
-            $(".cor").css('display', 'block')
-            $('.modal').addClass('show');
-        }
-        function close_modal() {
-
-            $('.modal').removeClass('show');
-        }
-
+           
         function get_detail() {
             $.ajax({
                 type: "GET",
@@ -201,8 +181,10 @@
 
         function comment_correction(test) {
             const a =$(`#${test}`).find('input').attr('id')
-            console.log($(`#${a}`).val())
-            $.ajax({
+            if (!$(`#${a}`).val()) {
+                alert('내용을 입력해주세요!')
+            } else {
+                $.ajax({
                 type: "PATCH",
                 url: `/api/comment/correction/${_id}`,
                 headers: {
@@ -227,10 +209,17 @@
                     }
                 }
             });
+            }
         }
-
+        
         function delete_comment(test) {
-            $.ajax({
+            if (confirm("정말 삭제 하시겠습니까?")==false) {
+                return;
+            } 
+            if (!localStorage.getItem('token')) {
+                alert('로그인후 사용해주세요!')
+            } else {
+                $.ajax({
                 type: "DELETE",
                 url: `/api/comment/delete/${_id}`,
                 headers: {
@@ -248,10 +237,19 @@
                     }
                 }
             });
+            }
+            
         }
 
         function comment_register() {
-            $.ajax({
+            if (!localStorage.getItem('token')) {
+                alert('로그인후 사용해주세요!')
+                
+            } else if (!$("#comment").val()) {
+                alert('내용을 입력해주세요!')
+                
+            } else {
+                $.ajax({
                 type: "POST",
                 url: `/api/comments/detail/${_id}`,
                 headers: {
@@ -275,6 +273,7 @@
                     }
                 }
             });
+            }
         }
     </script>
 
@@ -337,14 +336,14 @@
                             <div class="navbar-item">
                               <div class="buttons">
                                 <a class="button is-primary logout">
-                                  <strong>My page</strong>
-                                </a>
-                                <a class="button is-primary login" href='/login'>
-                                    <strong>로그인</strong>
-                                </a>
-                                <a class="button is-primary logout" onclick="signOut()" href='/login'>
-                                    <strong>로그아웃</strong>
-                                </a>
+                                      <strong>My page</strong>
+                                    </a>
+                                    <a class="button is-primary login" href='/login'>
+                                        <strong>로그인</strong>
+                                    </a>
+                                    <a class="button is-primary logout" onclick="signOut()" href='/login'>
+                                        <strong>로그아웃</strong>
+                                    </a>
                               </div>
                             </div>
                         </div>
@@ -384,42 +383,7 @@
             </footer>
         </div>
         
-        <div class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title cor">비밀번호를 입력해주세요!</p>
-                    <p class="modal-card-title reg">ID와 비밀번호를 입력해주세요!</p>
-                    <button class="delete" aria-label="close"></button>
-                </header>
-                <section class="modal-card-body">
-                    <div class="field">
-                        <p class="control has-icons-left reg">
-                            <input class="input" type="text" id="user_id" placeholder="ID">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                        </p>
-                        <br>
-                        <p class="control has-icons-left">
-                            <input class="input" type="password" id="passWord" placeholder="Password">
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                        </p>
-                    </div>
-                </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-success cor" onclick="correction()">수정/삭제</button>
-                    <button class="button is-success reg" onclick="comment_register()">등록</button>
-                    <button class="button" onclick="close_modal()">취소</button>
-                </footer>
-            </div>
-        </div>
-
-
-
-
+        
     </div>
     
 </body>

@@ -33,7 +33,7 @@
 
         $(document).ready(function () {
             correct_detail()
-            // $("#postsNum").text(posts.length)
+            loginState()            
         })
         function GO() {
             location.href=`/detail?_id=${_id}`
@@ -188,15 +188,26 @@
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="field is-grouped">
-                        <p class="control">
-                            
-                        </p>
-                        <p class="control">
-                            
-                        </p>
+                        <div class="navbar-end">
+                            <div class="navbar-item">
+                              <div class="buttons">
+                                <a class="button is-primary logout">
+                                  <strong>My page</strong>
+                                </a>
+                                <a class="button is-primary login" href='/login'>
+                                    <strong>로그인</strong>
+                                </a>
+                                <a class="button is-primary logout" onclick="signOut()" href='/login'>
+                                    <strong>로그아웃</strong>
+                                </a>
+                              </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
+           
         </div>
     </nav>
     <hr style="border: 2px;">

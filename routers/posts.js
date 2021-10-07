@@ -11,7 +11,7 @@ const authMiddleware = require('../middlewares/auth-middleware')
 const router = express.Router()
 
 const postUsersSchema = Joi.object({
-  userId: Joi.string().required().min(3),
+  userId: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,20}$')).required(),
   password: Joi.string().required().min(5),
   confirmPassword: Joi.string().required(),
 })
@@ -189,7 +189,7 @@ router.delete('/comment/delete/:_id', authMiddleware, async (req, res) => {
 
   if (c_userId.userId === userId) {
     await Posts.findOneAndUpdate({ _id }, { $pull: { comment_id: comment_id } })
-    await Comments.deleteOne({ userId, comment_id })
+    await Comments.deleteOne({ comment_id })
     res.send({ result: 'success' })
   } else {
     res.send({ msg: '내 댓글이 아닙니다.' })

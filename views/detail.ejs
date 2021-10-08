@@ -47,6 +47,27 @@
                 }
             })
         }
+        function post_correction(test) {
+            if (!localStorage.getItem('token')){
+                alert('로그인후 사용가능합니다!')
+                window.location.href="/login"
+            } else {
+                $.ajax({
+                type: 'GET',
+                url: '/api/users/me',
+                headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                success: function (response) {
+                    if (response['user'] !== test) {
+                        alert('내 게시물이 아닙니다.')
+                    } else {
+                        window.location.href=`/posts/correction?_id=${_id}`
+                    }                
+                },
+            })
+            }
+        }
 
         function make_detail(item) {
             let htmlTemp = `<div class="control">
@@ -54,7 +75,7 @@
                             </div>
                             <br>
                             <div class="control">
-                                <input class="input" type="text" value="${item["user_id"]}" readonly>
+                                <input class="input" type="text" value="${item["userId"]}" readonly>
                             </div>
                             <br>
                             <div class="control">
@@ -63,7 +84,7 @@
                             <br>
                             <div class="field is-grouped is-grouped-right">
                                 <p class="control">
-                                    <a class="button is-primary login" id="modal_btn" onclick="window.location.href='/posts/correction?_id=${_id}'">
+                                    <a class="button is-primary login" id="modal_btn" onclick="post_correction('${item["userId"]}')">
                                         수정/삭제
                                     </a>
                                 </p>
@@ -205,7 +226,7 @@
                         alert("변경 완료!");
                         window.location.href = `/detail?_id=${_id}`;
                     } else {
-                        alert("너 뭐냐?")
+                        alert(response['msg'])
                     }
                 }
             });
@@ -213,11 +234,10 @@
         }
         
         function delete_comment(test) {
-            if (confirm("정말 삭제 하시겠습니까?")==false) {
-                return;
-            } 
             if (!localStorage.getItem('token')) {
                 alert('로그인후 사용해주세요!')
+            } else if (confirm("정말 삭제 하시겠습니까?")==false) {
+                return;
             } else {
                 $.ajax({
                 type: "DELETE",

@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
   if (tokenType !== 'Bearer') {
     res.status(401).send({
-      errorMesage: '로그인 후 사용하세요',
+      msg: '로그인 후 사용하세요',
     });
     return;
   }
@@ -21,8 +21,9 @@ module.exports = (req, res, next) => {
       next();
     });
   } catch (error) {
+    console.log('요기')
     res.status(401).send({
-      errorMesage: '로그인 후 사용하세요',
+      msg: '로그인 후 사용하세요',
     });
     return;
   }

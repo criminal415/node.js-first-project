@@ -81,11 +81,7 @@ router.post('/auth', async (req, res) => {
 router.get('/users/me', authMiddleware, async (req, res) => {
   const { user } = res.locals
 
-  res.send({
-    user: {
-      userId: user.userId,
-    },
-  })
+  res.send({user: user.userId})
 })
 
 router.get('/posts', async (req, res, next) => {

@@ -23,7 +23,7 @@
 
     <script>
         let user;
-      getSelf(function (u) {
+        getSelf(function (u) {
         user = u;
       });
         function show_modal() {
@@ -52,7 +52,7 @@
                     content: $("#content").val(),
                 },
                 error: function (xhr, status, error) {
-                    if (status == 401) {
+                    if (xhr == 401) {
                         alert('로그인이 필요합니다.')
                     }
                     window.location.href = "/";
@@ -150,7 +150,7 @@
                     </a>
                 </p>
                 <p class="control">
-                    <a class="button is-light">
+                    <a class="button is-light" onclick="location.href='/'">
                         Cancel
                     </a>
                 </p>

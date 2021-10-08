@@ -11,30 +11,30 @@ const authMiddleware = require('../middlewares/auth-middleware')
 const router = express.Router()
 
 const postUsersSchema = Joi.object({
-  userId: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,20}$')).required(),
+  userId: Joi.string().pattern(new RegExp(/^[a-zA-Z0-9]{3,20}$/)).required(),
   password: Joi.string().required().min(5),
   confirmPassword: Joi.string().required(),
 })
 
 router.post('/users', async (req, res) => {
   try {
-    const { userId, password, confirmPassword } =
-      await postUsersSchema.validateAsync(req.body)
+    const { userId, password, confirmPassword } = await postUsersSchema.validateAsync(req.body)
+    const existUsers = await User.find({userId })
 
     if (password !== confirmPassword) {
       res.status(400).send({
         errorMessage: '패스워드가 패스워드 확인란과 동일하지 않습니다.',
       })
       return
-    }
-    const existUsers = await User.find({
-      $or: [{ userId }],
-    })
-    if (existUsers.length) {
+    } else if (existUsers.length) {
       res.status(400).send({
         errorMessage: '이미 사용중인 ID입니다.',
       })
       return
+    } else if (userId == password) {
+      res.status(400).send({
+        errorMessage: '비밀번호는 ID와 다른 값이여야 합니다.'
+      })
     }
 
     await User.create({ userId, password })

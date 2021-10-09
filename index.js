@@ -1,16 +1,14 @@
 const express = require('express');
 const app = express();
-const jwt = require('jsonwebtoken');
-const Joi = require('joi');
 
 const port = 3000;
 
 const connect = require('./models');
 connect();
 
-//const postsRouter = require('./routes/post');
-
 const postsRouter = require('./routers/posts');
+const commentsRouter = require('./routers/comments')
+const usersRouter = require('./routers/users')
 const posts = require('./models/posts');
 const comments = require('./models/comments');
 
@@ -23,9 +21,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
 
-//app.use('/post', postsRouter)
-
 app.use('/api', [postsRouter]);
+app.use('/api', [commentsRouter]);
+app.use('/api', [usersRouter]);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');

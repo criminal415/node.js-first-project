@@ -14,7 +14,7 @@ function getSelf(callback) {
       callback(response.user);
     },
     error: function (xhr, status, error) {
-      console.log(status, error)
+      console.log(status, error);
       if (status == 401) {
         alert('로그인이 필요합니다.');
       } else {
@@ -22,7 +22,6 @@ function getSelf(callback) {
         alert('로그인이 필요합니다.');
       }
       window.location.href = '/';
-      
     },
   });
 }

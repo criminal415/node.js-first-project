@@ -45,3 +45,16 @@
 .comment_cor_box {
     display: none;
 }
+
+.jumbotron {
+    border-radius: 0;
+  }
+
+  .input-group-text {
+    border-right-color: white;
+    background-color: white;
+  }
+
+  .input-group > input {
+    border-left-color: white;
+  }

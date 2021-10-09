@@ -7,7 +7,7 @@ const authMiddleware = require('../middlewares/auth-middleware')
 
 const router = express.Router()
 
-router.get('/comments/:_id', async (req, res) => {
+router.get('/:_id', async (req, res) => {
     const { _id } = req.params
   
     const comments = await Posts.findOne({ _id }).populate({
@@ -18,7 +18,7 @@ router.get('/comments/:_id', async (req, res) => {
     res.json({ detail: comments['comment_id'] })
 })
 
-router.post('/comments/detail/:_id', authMiddleware, async (req, res) => {
+router.post('/detail/:_id', authMiddleware, async (req, res) => {
     const post_id = req.params
     const { content } = req.body
     const { user } = res.locals
@@ -44,8 +44,7 @@ router.post('/comments/detail/:_id', authMiddleware, async (req, res) => {
     res.send({ result: 'success' })
 })
 
-router.patch('/comment/correction/:_id', authMiddleware, async (req, res) => {
-    const _id = req.params
+router.patch('/correction/:_id', authMiddleware, async (req, res) => {
     const { comment_id, content } = req.body
     const { user } = res.locals
     const userId = user.userId
@@ -60,7 +59,7 @@ router.patch('/comment/correction/:_id', authMiddleware, async (req, res) => {
     }
 })
 
-router.delete('/comment/delete/:_id', authMiddleware, async (req, res) => {
+router.delete('/delete/:_id', authMiddleware, async (req, res) => {
     const _id = req.params
     const { comment_id } = req.body
     const { user } = res.locals

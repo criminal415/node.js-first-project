@@ -1,13 +1,12 @@
 const express = require('express')
 const Mongoose = require('mongoose')
-const Comments = require('../models/comments')
 const Posts = require('../models/posts')
 const User = require('../models/user')
 const authMiddleware = require('../middlewares/auth-middleware')
 
 const router = express.Router()
 
-router.get('/posts', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const posts = await Posts.find({}).sort('-date')
 
@@ -21,14 +20,14 @@ router.get('/posts', async (req, res, next) => {
   }
 })
 
-router.get('/posts/:_id', async (req, res) => {
+router.get('/:_id', async (req, res) => {
   const { _id } = req.params
 
   const post = await Posts.findOne({ _id })
   res.json({ detail: post })
 })
 
-router.post('/posts', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   const { title, content } = req.body
   const { user } = res.locals
   const userId = user.userId
@@ -42,7 +41,7 @@ router.post('/posts', authMiddleware, async (req, res) => {
   res.send({ result: 'success' })
 })
 
-router.get('/posts/correction/:_id', authMiddleware, async (req, res) => {
+router.get('/correction/:_id', authMiddleware, async (req, res) => {
   const { _id } = req.params
 
   const post = await Posts.findOne({ _id: _id })
@@ -50,7 +49,7 @@ router.get('/posts/correction/:_id', authMiddleware, async (req, res) => {
   res.json({ post: post })
 })
 
-router.patch('/posts/correction/:_id', authMiddleware, async (req, res) => {
+router.patch('/correction/:_id', authMiddleware, async (req, res) => {
   const { _id } = req.params
   const { user_id, title, content } = req.body
   let date = new Date().toISOString()
@@ -62,7 +61,7 @@ router.patch('/posts/correction/:_id', authMiddleware, async (req, res) => {
   res.send({ result: 'success' })
 })
 
-router.delete('/posts/delete/:_id', authMiddleware, async (req, res) => {
+router.delete('/delete/:_id', authMiddleware, async (req, res) => {
   const { _id } = req.params
   const { user } = res.locals
   const userId = user.userId

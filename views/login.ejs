@@ -62,7 +62,7 @@
         let password = $('#inputPassword').val()
         $.ajax({
           type: 'POST',
-          url: '/api/auth',
+          url: '/api/users/auth',
           data: {
             userId: userId,
             password: password,

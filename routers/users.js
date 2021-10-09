@@ -1,5 +1,4 @@
 const express = require('express')
-const Mongoose = require('mongoose')
 const Joi = require('joi')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
@@ -15,7 +14,7 @@ const postUsersSchema = Joi.object({
   confirmPassword: Joi.string().required(),
 });
 
-router.post('/users', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { userId, password, confirmPassword } =
       await postUsersSchema.validateAsync(req.body);
@@ -78,7 +77,7 @@ router.post('/auth', async (req, res) => {
   }
 });
 
-router.get('/users/me', authMiddleware, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res) => {
   const { user } = res.locals;
 
   res.send({ user: user.userId });

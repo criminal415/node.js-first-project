@@ -64,7 +64,7 @@
             $("#postsList").empty()
             $.ajax({
                 type: "GET",
-                url: `/api/search/${keyword}`,
+                url: `/api/posts/search/${keyword}`,
                 data: {},
                 error: function (xhr, status, error) {
                     

@@ -9,8 +9,6 @@ connect();
 const postsRouter = require('./routers/posts');
 const commentsRouter = require('./routers/comments')
 const usersRouter = require('./routers/users')
-const posts = require('./models/posts');
-const comments = require('./models/comments');
 
 app.use((req, res, next) => {
   console.log(req);
@@ -21,9 +19,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use('/api', [postsRouter]);
-app.use('/api', [commentsRouter]);
-app.use('/api', [usersRouter]);
+app.use('/api/posts', [postsRouter]);
+app.use('/api/comments', [commentsRouter]);
+app.use('/api/users', [usersRouter]);
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
